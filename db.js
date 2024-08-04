@@ -1,0 +1,19 @@
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const DB_URL = process.env.DB_URL;
+console.log("DB_URL", DB_URL);
+
+// console.log("port", process.env.PORT);
+
+// mongoose.connect(DB_URL, { useNewUrlParser: true });
+
+const connectDB = () => {
+  mongoose
+    .connect(DB_URL)
+    .then(() => console.log("MongoDB Connected"))
+    .catch((err) => console.log(err));
+};
+
+module.exports = connectDB;
