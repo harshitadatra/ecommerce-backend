@@ -59,4 +59,52 @@ const signupHandler = async (req, res) => {
       .json({ message: "Sign up failed.Please try again later!" });
   }
 };
-module.exports = { signupHandler };
+
+const loginHandler = async (req, res) => {
+  const data = req.body;
+  let userExist;
+  try {
+    userExist = await User.findOne({ email: data.email });
+  } catch (e) {
+    return res.status(500).json({
+      message: " Login failed.Please try again later!",
+    });
+  }
+
+  if (!userExist) {
+    return res.status(401).json({
+      message: "Invalid credentials. Check your username and password.",
+    });
+  }
+
+  let isPasswordValid = false;
+  try {
+    isPasswordValid = await bcrypt.compare(data.password, userExist.password);
+  } catch (e) {
+    return res.status(500).json({
+      message: " Login failed.Please try again later!",
+    });
+  }
+
+  if (!isPasswordValid) {
+    return res.status(401).json({
+      message: "Invalid credentials. Check your username and password.2",
+    });
+  }
+
+  const token = jwt.sign(
+    { userId: userExist._id, email: userExist.email },
+    JWT_SECRET,
+    { expiresIn: "24h" }
+  );
+
+  return res.status(200).json({
+    message: "Login successful;",
+    user: {
+      token,
+      id: userExist._id,
+      email: userExist.email,
+    },
+  });
+};
+module.exports = { signupHandler, loginHandler };
