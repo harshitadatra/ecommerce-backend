@@ -38,7 +38,7 @@ const postProductHandler = async (req, res) => {
   }
 };
 
-moduule.exports = {
+module.exports = {
   getAllProductsHandler,
   getProductHandler,
   postProductHandler,
